@@ -35,3 +35,33 @@ export const CATEGORY_COLOR: Record<Category, string> = {
   life: 'bg-emerald-500',
   other: 'bg-violet-500',
 }
+
+export type ExpenseCategory = 'food' | 'transport' | 'shopping' | 'entertainment' | 'housing' | 'other'
+
+export interface Expense {
+  id: string
+  amount: number
+  category: ExpenseCategory
+  note?: string
+  /** ISO date (yyyy-MM-dd) - the day the expense happened. */
+  date: string
+  createdAt: string
+}
+
+export const EXPENSE_CATEGORY_LABEL: Record<ExpenseCategory, string> = {
+  food: '餐飲',
+  transport: '交通',
+  shopping: '購物',
+  entertainment: '娛樂',
+  housing: '居家',
+  other: '其他',
+}
+
+export const EXPENSE_CATEGORY_COLOR: Record<ExpenseCategory, string> = {
+  food: 'bg-orange-500',
+  transport: 'bg-sky-500',
+  shopping: 'bg-pink-500',
+  entertainment: 'bg-violet-500',
+  housing: 'bg-amber-500',
+  other: 'bg-slate-400',
+}

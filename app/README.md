@@ -4,13 +4,19 @@
 
 ## 目前狀態
 
-第一版 MVP：**待辦/提醒卡片**
+**待辦/提醒卡片**（第一版 MVP）
 
 - 新增待辦（標題／時間／分類：工作·生活·其他）
 - 提醒重複：不重複／每日／每週／自訂星期
 - 今日／本週／全部檢視
 - 完成勾選、逾期標示、分類篩選
 - 簡單等級系統：完成待辦獲得 XP，累積 XP 升等
+
+**記帳卡片**
+
+- 快速記一筆（金額／分類：餐飲·交通·購物·娛樂·居家·其他／備註／日期）
+- 本月支出總覽、依分類的支出佔比長條圖
+- 本月記帳明細列表、可刪除
 
 ## 技術架構
 
@@ -21,12 +27,13 @@
 
 ### 架構重點
 
-- `src/types.ts`：核心資料型別（`Todo`、`Category`、`RepeatRule`）。
+- `src/types.ts`：核心資料型別（`Todo`、`Category`、`RepeatRule`、`Expense`、`ExpenseCategory`）。
 - `src/hooks/useTodos.ts`：待辦事項的 CRUD 與重複邏輯。
+- `src/hooks/useExpenses.ts`：記帳紀錄的 CRUD。
 - `src/hooks/useGamification.ts`：XP／等級計算與持久化。
 - `src/hooks/useTodoReminders.ts`：瀏覽器 Notification API 的 best-effort 提醒（僅在分頁開啟時有效，見下方限制）。
 - `src/components/Dashboard.tsx`：首頁殼層，未來新模組直接以卡片形式加進 `children`。
-- `src/components/cards/`：各功能模組卡片，目前只有 `TodoCard`。
+- `src/components/cards/`：各功能模組卡片，目前有 `TodoCard`、`ExpenseCard`。
 
 ## 開發
 
@@ -45,7 +52,6 @@ MVP 使用瀏覽器 `Notification` API，只有在網頁分頁開啟時才會觸
 
 | 模組 | 說明 |
 |---|---|
-| 記帳卡片 | 本月支出總覽、快速記一筆 |
 | 生活數據卡片 | 習慣打卡、健康數據（飲水、體重、睡眠） |
 | 行事曆/日程卡片 | 顯示當日行程 |
 | 捷徑列 | 串連常用功能 |
