@@ -21,6 +21,7 @@ export function TodoForm({
 }) {
   const [title, setTitle] = useState('')
   const [category, setCategory] = useState<Category>('life')
+  const [hasDate, setHasDate] = useState(true)
   const [dateTime, setDateTime] = useState(defaultDateTime())
   const [repeatType, setRepeatType] = useState<RepeatType>('none')
   const [customDays, setCustomDays] = useState<number[]>([])
@@ -33,16 +34,17 @@ export function TodoForm({
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
-    if (!title.trim() || !dateTime) return
+    if (!title.trim()) return
+    if (hasDate && !dateTime) return
 
     onSubmit({
       title: title.trim(),
       category,
-      dueAt: new Date(dateTime).toISOString(),
+      dueAt: hasDate ? new Date(dateTime).toISOString() : undefined,
       repeat:
-        repeatType === 'custom'
+        hasDate && repeatType === 'custom'
           ? { type: 'custom', daysOfWeek: customDays }
-          : { type: repeatType },
+          : { type: hasDate ? repeatType : 'none' },
     })
 
     setTitle('')
@@ -61,13 +63,24 @@ export function TodoForm({
         className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-slate-400"
       />
 
-      <div className="flex flex-wrap gap-2">
+      <label className="flex items-center gap-2 text-xs text-slate-500">
         <input
-          type="datetime-local"
-          value={dateTime}
-          onChange={(e) => setDateTime(e.target.value)}
-          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-slate-400"
+          type="checkbox"
+          checked={!hasDate}
+          onChange={(e) => setHasDate(!e.target.checked)}
         />
+        不指定日期
+      </label>
+
+      <div className="flex flex-wrap gap-2">
+        {hasDate && (
+          <input
+            type="datetime-local"
+            value={dateTime}
+            onChange={(e) => setDateTime(e.target.value)}
+            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-slate-400"
+          />
+        )}
 
         <select
           value={category}
@@ -81,19 +94,21 @@ export function TodoForm({
           ))}
         </select>
 
-        <select
-          value={repeatType}
-          onChange={(e) => setRepeatType(e.target.value as RepeatType)}
-          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-slate-400"
-        >
-          <option value="none">不重複</option>
-          <option value="daily">每日</option>
-          <option value="weekly">每週</option>
-          <option value="custom">自訂星期</option>
-        </select>
+        {hasDate && (
+          <select
+            value={repeatType}
+            onChange={(e) => setRepeatType(e.target.value as RepeatType)}
+            className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-slate-400"
+          >
+            <option value="none">不重複</option>
+            <option value="daily">每日</option>
+            <option value="weekly">每週</option>
+            <option value="custom">自訂星期</option>
+          </select>
+        )}
       </div>
 
-      {repeatType === 'custom' && (
+      {hasDate && repeatType === 'custom' && (
         <div className="flex gap-1.5">
           {WEEKDAY_LABEL.map((label, day) => (
             <button

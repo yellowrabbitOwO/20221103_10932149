@@ -7,7 +7,7 @@ import { useLocalStorageState } from './useLocalStorageState'
 export interface NewTodoInput {
   title: string
   category: Category
-  dueAt: string
+  dueAt?: string
   repeat: RepeatRule
 }
 
@@ -42,7 +42,7 @@ export function useTodos(onXpEarned: (amount: number) => void) {
     onXpEarned(XP_PER_TODO)
 
     const updated: Todo =
-      todo.repeat.type === 'none'
+      todo.repeat.type === 'none' || !todo.dueAt
         ? { ...todo, completed: true, completedAt: new Date().toISOString() }
         : {
             ...todo,

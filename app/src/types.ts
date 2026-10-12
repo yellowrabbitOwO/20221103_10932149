@@ -12,8 +12,8 @@ export interface Todo {
   id: string
   title: string
   category: Category
-  /** ISO datetime string of when this todo is due / should remind. */
-  dueAt: string
+  /** ISO datetime string of when this todo is due / should remind. Undefined = no date set. */
+  dueAt?: string
   repeat: RepeatRule
   completed: boolean
   completedAt?: string

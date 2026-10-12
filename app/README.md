@@ -6,9 +6,10 @@
 
 **待辦/提醒卡片**（第一版 MVP）
 
-- 新增待辦（標題／時間／分類：工作·生活·其他）
-- 提醒重複：不重複／每日／每週／自訂星期
-- 今日／本週／全部檢視
+- 新增待辦（標題／時間／分類：工作·生活·其他／也可以不指定日期）
+- 提醒重複：不重複／每日／每週／自訂星期（僅限有指定日期的待辦）
+- 今日／本週／日曆／全部檢視
+- 日曆檢視：月曆格子顯示當月待辦分布，點日期看當天待辦；全部檢視與日曆檢視都會列出「沒有日期」的待辦
 - 完成勾選、逾期標示、分類篩選
 - 簡單等級系統：完成待辦獲得 XP，累積 XP 升等
 
@@ -31,6 +32,7 @@
 
 - `src/types.ts`：核心資料型別（`Todo`、`Category`、`RepeatRule`、`Expense`、`ExpenseCategory`、`Account`）。
 - `src/hooks/useTodos.ts`：待辦事項的 CRUD 與重複邏輯。
+- `src/components/cards/CalendarView.tsx`：待辦的月曆檢視（`TodoCard` 的其中一個檢視模式）。
 - `src/hooks/useExpenses.ts`：記帳紀錄的 CRUD，新增／刪除時會透過回呼同步調整對應帳戶餘額。
 - `src/hooks/useAccounts.ts`：帳戶（銀行／現金／悠遊卡等）的 CRUD 與餘額調整。
 - `src/hooks/useGamification.ts`：XP／等級計算與持久化。

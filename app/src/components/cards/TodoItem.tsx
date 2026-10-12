@@ -44,7 +44,8 @@ export function TodoItem({
           {todo.title}
         </p>
         <p className="text-xs text-slate-400">
-          {CATEGORY_LABEL[todo.category]} · {format(new Date(todo.dueAt), 'MM/dd HH:mm')}
+          {CATEGORY_LABEL[todo.category]} ·{' '}
+          {todo.dueAt ? format(new Date(todo.dueAt), 'MM/dd HH:mm') : '未指定日期'}
           {todo.repeat.type !== 'none' && ' · 重複'}
         </p>
       </div>

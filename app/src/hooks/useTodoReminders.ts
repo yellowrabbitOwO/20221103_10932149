@@ -27,9 +27,9 @@ export function useTodoReminders(todos: Todo[]) {
     }
 
     const timers = todos
-      .filter((todo) => !todo.completed)
+      .filter((todo) => !todo.completed && todo.dueAt)
       .map((todo) => {
-        const delay = new Date(todo.dueAt).getTime() - Date.now()
+        const delay = new Date(todo.dueAt as string).getTime() - Date.now()
         if (delay < 0 || delay > MAX_TIMEOUT_MS) return null
 
         return setTimeout(() => {

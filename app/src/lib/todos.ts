@@ -8,15 +8,17 @@ import {
 import type { RepeatRule, Todo } from '../types'
 
 export function isOverdue(todo: Todo, now: Date): boolean {
-  if (todo.completed) return false
+  if (todo.completed || !todo.dueAt) return false
   return new Date(todo.dueAt).getTime() < now.getTime()
 }
 
 export function isToday(todo: Todo, now: Date): boolean {
+  if (!todo.dueAt) return false
   return isSameDay(new Date(todo.dueAt), now)
 }
 
 export function isThisWeek(todo: Todo, now: Date): boolean {
+  if (!todo.dueAt) return false
   const due = new Date(todo.dueAt)
   return isWithinInterval(due, {
     start: startOfDay(now),

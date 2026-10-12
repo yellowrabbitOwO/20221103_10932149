@@ -1,14 +1,20 @@
 import { useState } from 'react'
 import type { NewTodoInput } from '../../hooks/useTodos'
-import { isThisWeek, isToday } from '../../lib/todos'
+import { isOverdue, isThisWeek, isToday } from '../../lib/todos'
 import type { Category, Todo } from '../../types'
+import { CalendarView } from './CalendarView'
 import { CategoryFilter } from './CategoryFilter'
 import { TodoForm } from './TodoForm'
 import { TodoItem } from './TodoItem'
 
-type ViewMode = 'today' | 'week' | 'all'
+type ViewMode = 'today' | 'week' | 'calendar' | 'all'
 
-const VIEW_LABEL: Record<ViewMode, string> = { today: '今日', week: '本週', all: '全部' }
+const VIEW_LABEL: Record<ViewMode, string> = {
+  today: '今日',
+  week: '本週',
+  calendar: '日曆',
+  all: '全部',
+}
 
 export function TodoCard({
   todos,
@@ -27,16 +33,20 @@ export function TodoCard({
 
   const now = new Date()
 
-  const visible = todos
+  const categoryFiltered = todos.filter((todo) => category === 'all' || todo.category === category)
+
+  const visible = categoryFiltered
     .filter((todo) => {
-      if (category !== 'all' && todo.category !== category) return false
       if (todo.completed) return true // keep completed items visible in their view for satisfaction
-      if (view === 'today') return isToday(todo, now) || new Date(todo.dueAt) < now
+      if (view === 'today') return isToday(todo, now) || isOverdue(todo, now)
       if (view === 'week') return isThisWeek(todo, now)
       return true
     })
     .sort((a, b) => {
       if (a.completed !== b.completed) return a.completed ? 1 : -1
+      if (!a.dueAt && !b.dueAt) return 0
+      if (!a.dueAt) return 1
+      if (!b.dueAt) return -1
       return new Date(a.dueAt).getTime() - new Date(b.dueAt).getTime()
     })
 
@@ -67,7 +77,7 @@ export function TodoCard({
 
       <div className="mt-4 flex items-center justify-between gap-3">
         <div className="flex gap-1 rounded-full bg-slate-100 p-1">
-          {(['today', 'week', 'all'] as ViewMode[]).map((v) => (
+          {(['today', 'week', 'calendar', 'all'] as ViewMode[]).map((v) => (
             <button
               key={v}
               type="button"
@@ -83,14 +93,20 @@ export function TodoCard({
         <CategoryFilter value={category} onChange={setCategory} />
       </div>
 
-      <ul className="mt-2">
-        {visible.length === 0 && (
-          <li className="py-8 text-center text-sm text-slate-400">目前沒有待辦事項</li>
-        )}
-        {visible.map((todo) => (
-          <TodoItem key={todo.id} todo={todo} onToggle={onToggle} onDelete={onDelete} />
-        ))}
-      </ul>
+      {view === 'calendar' ? (
+        <div className="mt-2">
+          <CalendarView todos={categoryFiltered} onToggle={onToggle} onDelete={onDelete} />
+        </div>
+      ) : (
+        <ul className="mt-2">
+          {visible.length === 0 && (
+            <li className="py-8 text-center text-sm text-slate-400">目前沒有待辦事項</li>
+          )}
+          {visible.map((todo) => (
+            <TodoItem key={todo.id} todo={todo} onToggle={onToggle} onDelete={onDelete} />
+          ))}
+        </ul>
+      )}
     </section>
   )
 }
