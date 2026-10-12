@@ -46,6 +46,8 @@ export interface Expense {
   /** ISO date (yyyy-MM-dd) - the day the expense happened. */
   date: string
   createdAt: string
+  /** Which account this was paid from. Optional for backward compatibility with entries recorded before accounts existed. */
+  accountId?: string
 }
 
 export const EXPENSE_CATEGORY_LABEL: Record<ExpenseCategory, string> = {
@@ -65,3 +67,14 @@ export const EXPENSE_CATEGORY_COLOR: Record<ExpenseCategory, string> = {
   housing: 'bg-amber-500',
   other: 'bg-slate-400',
 }
+
+/** A payment source / wallet (e.g. 銀行、現金、悠遊卡). User-defined, not a fixed set. */
+export interface Account {
+  id: string
+  name: string
+  /** Current balance, seeded from the user's initial input and adjusted as expenses are logged. */
+  balance: number
+  createdAt: string
+}
+
+export const ACCOUNT_NAME_SUGGESTIONS = ['銀行', '現金', '悠遊卡', '信用卡']

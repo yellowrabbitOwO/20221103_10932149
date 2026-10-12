@@ -1,13 +1,15 @@
 import { format } from 'date-fns'
 import { useState } from 'react'
 import type { NewExpenseInput } from '../../hooks/useExpenses'
-import type { ExpenseCategory } from '../../types'
+import type { Account, ExpenseCategory } from '../../types'
 import { EXPENSE_CATEGORY_LABEL } from '../../types'
 
 export function ExpenseForm({
+  accounts,
   onSubmit,
   onCancel,
 }: {
+  accounts: Account[]
   onSubmit: (input: NewExpenseInput) => void
   onCancel: () => void
 }) {
@@ -15,13 +17,14 @@ export function ExpenseForm({
   const [category, setCategory] = useState<ExpenseCategory>('food')
   const [note, setNote] = useState('')
   const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'))
+  const [accountId, setAccountId] = useState(accounts[0]?.id ?? '')
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     const parsed = Number(amount)
-    if (!parsed || parsed <= 0 || !date) return
+    if (!parsed || parsed <= 0 || !date || !accountId) return
 
-    onSubmit({ amount: parsed, category, note: note.trim() || undefined, date })
+    onSubmit({ amount: parsed, category, note: note.trim() || undefined, date, accountId })
 
     setAmount('')
     setNote('')
@@ -67,6 +70,18 @@ export function ExpenseForm({
           {(Object.keys(EXPENSE_CATEGORY_LABEL) as ExpenseCategory[]).map((c) => (
             <option key={c} value={c}>
               {EXPENSE_CATEGORY_LABEL[c]}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={accountId}
+          onChange={(e) => setAccountId(e.target.value)}
+          className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-slate-400"
+        >
+          {accounts.map((account) => (
+            <option key={account.id} value={account.id}>
+              {account.name}
             </option>
           ))}
         </select>

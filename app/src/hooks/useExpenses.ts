@@ -7,9 +7,10 @@ export interface NewExpenseInput {
   category: ExpenseCategory
   note?: string
   date: string
+  accountId: string
 }
 
-export function useExpenses() {
+export function useExpenses(onAccountBalanceChange: (accountId: string, delta: number) => void) {
   const [expenses, setExpenses] = useLocalStorageState<Expense[]>('life-assistant:expenses', [])
 
   function addExpense(input: NewExpenseInput) {
@@ -19,13 +20,21 @@ export function useExpenses() {
       category: input.category,
       note: input.note,
       date: input.date,
+      accountId: input.accountId,
       createdAt: new Date().toISOString(),
     }
-    setExpenses((prev) => [...prev, expense])
+    setExpenses([...expenses, expense])
+    onAccountBalanceChange(input.accountId, -input.amount)
   }
 
   function deleteExpense(id: string) {
-    setExpenses((prev) => prev.filter((expense) => expense.id !== id))
+    const expense = expenses.find((e) => e.id === id)
+    if (!expense) return
+
+    setExpenses(expenses.filter((e) => e.id !== id))
+    if (expense.accountId) {
+      onAccountBalanceChange(expense.accountId, expense.amount)
+    }
   }
 
   return { expenses, addExpense, deleteExpense }

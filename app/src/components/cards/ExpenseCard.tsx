@@ -1,19 +1,25 @@
 import { useState } from 'react'
 import type { NewExpenseInput } from '../../hooks/useExpenses'
 import { formatCurrency, isThisMonth, monthTotal, monthTotalsByCategory } from '../../lib/expenses'
-import type { Expense } from '../../types'
+import type { Account, Expense } from '../../types'
 import { EXPENSE_CATEGORY_COLOR, EXPENSE_CATEGORY_LABEL } from '../../types'
+import { AccountOnboarding } from './AccountOnboarding'
+import { AccountSummary } from './AccountSummary'
 import { ExpenseForm } from './ExpenseForm'
 import { ExpenseItem } from './ExpenseItem'
 
 export function ExpenseCard({
   expenses,
+  accounts,
   onAdd,
   onDelete,
+  onAddAccount,
 }: {
   expenses: Expense[]
+  accounts: Account[]
   onAdd: (input: NewExpenseInput) => void
   onDelete: (id: string) => void
+  onAddAccount: (name: string, initialBalance: number) => void
 }) {
   const [showForm, setShowForm] = useState(false)
 
@@ -23,6 +29,16 @@ export function ExpenseCard({
   const thisMonthExpenses = expenses
     .filter((e) => isThisMonth(e, now))
     .sort((a, b) => b.date.localeCompare(a.date) || b.createdAt.localeCompare(a.createdAt))
+  const accountNameById = new Map(accounts.map((a) => [a.id, a.name]))
+
+  if (accounts.length === 0) {
+    return (
+      <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
+        <h2 className="text-sm font-semibold text-slate-900">記帳</h2>
+        <AccountOnboarding onAddAccount={onAddAccount} />
+      </section>
+    )
+  }
 
   return (
     <section className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
@@ -40,6 +56,7 @@ export function ExpenseCard({
       {showForm && (
         <div className="mt-4">
           <ExpenseForm
+            accounts={accounts}
             onSubmit={(input) => {
               onAdd(input)
               setShowForm(false)
@@ -50,6 +67,10 @@ export function ExpenseCard({
       )}
 
       <div className="mt-4">
+        <AccountSummary accounts={accounts} onAddAccount={onAddAccount} />
+      </div>
+
+      <div className="mt-4 border-t border-slate-100 pt-4">
         <p className="text-xs text-slate-400">本月支出</p>
         <p className="text-2xl font-semibold text-slate-900">{formatCurrency(total)}</p>
       </div>
@@ -78,7 +99,12 @@ export function ExpenseCard({
           <li className="py-8 text-center text-sm text-slate-400">本月還沒有記帳紀錄</li>
         )}
         {thisMonthExpenses.map((expense) => (
-          <ExpenseItem key={expense.id} expense={expense} onDelete={onDelete} />
+          <ExpenseItem
+            key={expense.id}
+            expense={expense}
+            accountName={expense.accountId ? accountNameById.get(expense.accountId) : undefined}
+            onDelete={onDelete}
+          />
         ))}
       </ul>
     </section>

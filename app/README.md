@@ -14,8 +14,10 @@
 
 **記帳卡片**
 
-- 快速記一筆（金額／分類：餐飲·交通·購物·娛樂·居家·其他／備註／日期）
-- 本月支出總覽、依分類的支出佔比長條圖
+- 帳戶（可自訂新增，例如：銀行、現金、悠遊卡）：第一次使用時需先新增至少一個帳戶並輸入目前金額，之後也能隨時新增更多帳戶
+- 快速記一筆（金額／分類：餐飲·交通·購物·娛樂·居家·其他／備註／日期／從哪個帳戶支出）
+- 支出會自動從所選帳戶餘額扣除，刪除紀錄會自動把金額補回該帳戶
+- 總資產總覽（所有帳戶餘額加總）、本月支出總覽、依分類的支出佔比長條圖
 - 本月記帳明細列表、可刪除
 
 ## 技術架構
@@ -27,13 +29,14 @@
 
 ### 架構重點
 
-- `src/types.ts`：核心資料型別（`Todo`、`Category`、`RepeatRule`、`Expense`、`ExpenseCategory`）。
+- `src/types.ts`：核心資料型別（`Todo`、`Category`、`RepeatRule`、`Expense`、`ExpenseCategory`、`Account`）。
 - `src/hooks/useTodos.ts`：待辦事項的 CRUD 與重複邏輯。
-- `src/hooks/useExpenses.ts`：記帳紀錄的 CRUD。
+- `src/hooks/useExpenses.ts`：記帳紀錄的 CRUD，新增／刪除時會透過回呼同步調整對應帳戶餘額。
+- `src/hooks/useAccounts.ts`：帳戶（銀行／現金／悠遊卡等）的 CRUD 與餘額調整。
 - `src/hooks/useGamification.ts`：XP／等級計算與持久化。
 - `src/hooks/useTodoReminders.ts`：瀏覽器 Notification API 的 best-effort 提醒（僅在分頁開啟時有效，見下方限制）。
 - `src/components/Dashboard.tsx`：首頁殼層，未來新模組直接以卡片形式加進 `children`。
-- `src/components/cards/`：各功能模組卡片，目前有 `TodoCard`、`ExpenseCard`。
+- `src/components/cards/`：各功能模組卡片，目前有 `TodoCard`、`ExpenseCard`（含帳戶設定/總覽子元件）。
 
 ## 開發
 

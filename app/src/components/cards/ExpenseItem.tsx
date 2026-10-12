@@ -5,9 +5,11 @@ import { EXPENSE_CATEGORY_COLOR, EXPENSE_CATEGORY_LABEL } from '../../types'
 
 export function ExpenseItem({
   expense,
+  accountName,
   onDelete,
 }: {
   expense: Expense
+  accountName?: string
   onDelete: (id: string) => void
 }) {
   return (
@@ -17,7 +19,8 @@ export function ExpenseItem({
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm text-slate-800">{expense.note || EXPENSE_CATEGORY_LABEL[expense.category]}</p>
         <p className="text-xs text-slate-400">
-          {EXPENSE_CATEGORY_LABEL[expense.category]} · {format(new Date(expense.date), 'MM/dd')}
+          {EXPENSE_CATEGORY_LABEL[expense.category]}
+          {accountName && ` · ${accountName}`} · {format(new Date(expense.date), 'MM/dd')}
         </p>
       </div>
 
