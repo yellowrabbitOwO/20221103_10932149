@@ -1,0 +1,49 @@
+name: Build Music Player APK
+
+on:
+  push:
+    paths:
+      - "music-player/**"
+      - ".github/workflows/music-player.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: music-player
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - name: Build APK
+        run: |
+          chmod +x gradlew
+          ./gradlew assembleRelease --no-daemon --stacktrace
+          cp app/build/outputs/apk/release/app-release.apk ../SimpleMusicPlayer.apk
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: SimpleMusicPlayer
+          path: SimpleMusicPlayer.apk
+
+      - name: Publish to Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: music-player-latest
+          name: 簡單音樂播放器（最新版）
+          body: |
+            用手機打開這個頁面，點下方的 SimpleMusicPlayer.apk 下載並安裝。
+            建置版本：#${{ github.run_number }}（${{ github.sha }}）
+          files: SimpleMusicPlayer.apk
+          make_latest: true
