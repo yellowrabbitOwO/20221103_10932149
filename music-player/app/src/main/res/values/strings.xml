@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">簡單音樂</string>
+    <string name="search_hint">搜尋歌名、歌手或專輯</string>
+    <string name="all_songs">全部歌曲 (%1$d)</string>
+    <string name="folder_item">%1$s (%2$d)</string>
+    <string name="nothing_playing">尚未播放</string>
+    <string name="unknown_artist">未知歌手</string>
+    <string name="need_permission">需要「音樂和音訊」權限才能讀取手機裡的 MP3</string>
+    <string name="grant_permission">授予權限</string>
+    <string name="no_songs">找不到音樂檔案</string>
+    <string name="no_match">沒有符合的歌曲</string>
+    <string name="loading">正在掃描音樂…</string>
+    <string name="shuffle">隨機播放</string>
+    <string name="previous">上一首</string>
+    <string name="play_pause">播放／暫停</string>
+    <string name="next">下一首</string>
+    <string name="repeat">循環模式</string>
+    <string name="toast_repeat_off">循環：關閉</string>
+    <string name="toast_repeat_all">循環：全部</string>
+    <string name="toast_repeat_one">循環：單曲</string>
+</resources>
